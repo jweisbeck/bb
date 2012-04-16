@@ -13,13 +13,13 @@ function(todo, Backbone, Storage ) {
 
   // Create a new module
   var Todo = todo.module();
-console.log(Todo);
+
   // Todo extendings
   Todo.Model = Backbone.Model.extend({
 		defaults: function() {
 			return {
 				title: "empty todo...",
-				order: Todos.NextOrder(),
+				order: Todos.nextOrder(),
 				done: false
 			};
 		},
@@ -69,10 +69,10 @@ console.log(Todo);
   Todo.Router = Backbone.Router.extend({ /* ... */ });
 
   // This will fetch the tutorial template and render it.
-  Todo.Views.Todo = Backbone.View.extend({
+  Todo.Views.TodoView = Backbone.View.extend({
 		tagname: "li",
-		//template: "app/templates/todo.html",
-    template: "app/templates/todo-app.html",
+    template: _.template( $('#item-template').html() ),
+		//template: "app/templates/item-template.html",
 
 		events: {
 		      "click .toggle"   : "toggleDone",
@@ -95,8 +95,8 @@ console.log(Todo);
 			this.input = this.$('.edit');
 			return this;
 
-      // Fetch the template, render it to the View element and call done.
-     /*
+			/*
+      // Fetch the template, render it to the View element and call done.     
  			todo.fetchTemplate(this.template, function(tmpl) {
         view.el.innerHTML = tmpl();
 
@@ -104,8 +104,9 @@ console.log(Todo);
         if (_.isFunction(done)) {
           done(view.el);
         }
-      });
-			*/
+      });*/
+
+			
     },
 
 		toggleDone: function() {
@@ -137,6 +138,82 @@ console.log(Todo);
 		}
 
   });
+
+	Todo.Views.AppView = Backbone.View.extend({
+		el: $('#todoapp'),
+		//statsTemplate: "app/templates/stats-template.html",
+		statsTemplate: _.template( $('#stats-template').html() ),
+		
+		events: {
+			"keypress #new-todo": "createOnEnter",
+			"click #clear-completed": "clearCompleted",
+			"click #toggle-all": "toggleAllComplete"
+		},
+		
+		
+		
+		initialize: function() {
+			this.input = this.$("#new-todo"),
+			this.allCheckBox = this.$("#toggle-all")[0];
+			
+			Todos.bind('add', this.addOne, this);
+			Todos.bind('reset', this.addAll, this);
+			Todos.bind('all', this.render, this);
+			
+			this.footer = this.$("footer");
+			this.main = $("main");
+			
+			Todos.fetch();		
+		},
+		
+		render: function() {
+			var done = Todos.done().length;
+			var remaining = Todos.remaining().length;
+
+			if (Todos.length) {
+			  this.main.show();
+			  this.footer.show();
+			  this.footer.html(this.statsTemplate({done: done, remaining: remaining}));
+			} else {
+			  this.main.hide();
+			  this.footer.hide();
+			}
+			
+		},
+		
+		addOne: function(todo) {
+	    var view = new Todo.Views.TodoView({model: todo});
+			this.$("#todo-list").append( view.render().el );
+	  },
+
+		addAll: function() {
+			Todos.each(this.addOne);
+		},
+		
+		createOnEnter: function(e) {
+			if (e.keyCode != 13) return;
+			if (!this.input.val()) return;
+			Todos.create({title: this.input.val()});
+			this.input.val('');
+		},
+		
+		clearCompleted: function() {
+			_.each(Todos.done(), function(todo) {
+				todo.clear();
+			});
+			return false;
+		},
+		
+		toggleAllComplete: function() {
+			var done = this.allCheckbox.checked;
+			Todos.each(function(todo) {
+				todo.save({'done': done});
+			});
+		}
+		
+	});
+
+	var app = Todo.Views.AppView;
 
   // Required, return the module for AMD compliance
   return Todo;

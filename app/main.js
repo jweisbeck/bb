@@ -19,10 +19,10 @@ function(todo, $, Backbone, Todo) {
 
     index: function(hash) {
       var route = this;
-      var todo = new Todo.Views.Todo();
+      var todoInit = new Todo.Views.AppView();	
 
       // Attach the tutorial to the DOM
-      todo.render(function(el) {
+      todoInit.render(function(el) {
         $("#main").html(el);
 
         // Fix for hashes in pushState and hash fragment
