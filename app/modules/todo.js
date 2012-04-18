@@ -31,7 +31,7 @@ function(todo, Backbone, Storage ) {
 		},
 		
 		toggle: function() {
-			this.save( {done: !this.get("done")})
+			this.save( {done: !this.get("done")});
 		},
 		
 		clear: function() {
@@ -70,7 +70,7 @@ function(todo, Backbone, Storage ) {
 
   // This will fetch the tutorial template and render it.
   Todo.Views.TodoView = Backbone.View.extend({
-		tagname: "li",
+		tagName: "li",
     template: _.template( $('#item-template').html() ),
 		//template: "app/templates/item-template.html",
 
@@ -88,8 +88,6 @@ function(todo, Backbone, Storage ) {
 		},
 
     render: function(done) {
-      var view = this;
-
 			this.$el.html(this.template(this.model.toJSON()));
 			this.$el.toggleClass('done', this.model.get('done'));
 			this.input = this.$('.edit');
@@ -154,14 +152,14 @@ function(todo, Backbone, Storage ) {
 		
 		initialize: function() {
 			this.input = this.$("#new-todo"),
-			this.allCheckBox = this.$("#toggle-all")[0];
-			
+			this.allCheckbox = this.$("#toggle-all")[0];
+
 			Todos.bind('add', this.addOne, this);
 			Todos.bind('reset', this.addAll, this);
 			Todos.bind('all', this.render, this);
 			
 			this.footer = this.$("footer");
-			this.main = $("main");
+			this.main = this.$("#main");
 			
 			Todos.fetch();		
 		},
@@ -179,6 +177,8 @@ function(todo, Backbone, Storage ) {
 			  this.footer.hide();
 			}
 			
+			this.allCheckbox.checked = !remaining;
+ 
 		},
 		
 		addOne: function(todo) {
@@ -212,8 +212,6 @@ function(todo, Backbone, Storage ) {
 		}
 		
 	});
-
-	var app = Todo.Views.AppView;
 
   // Required, return the module for AMD compliance
   return Todo;

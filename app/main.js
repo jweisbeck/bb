@@ -20,7 +20,7 @@ function(todo, $, Backbone, Todo) {
     index: function(hash) {
       var route = this;
       var todoInit = new Todo.Views.AppView();	
-
+			
       // Attach the tutorial to the DOM
       todoInit.render(function(el) {
         $("#main").html(el);

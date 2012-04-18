@@ -13,10 +13,6 @@
 
 <body>
   <!-- Main container -->
-	<header>
-		<h1>Todo App</h1>
-	</header>
-
 	<div id="todoapp">
 
 	  <header>
@@ -27,29 +23,12 @@
 	  <section id="main">
 	    <input id="toggle-all" type="checkbox">
 	    <label for="toggle-all">Mark all as complete</label>
-	    <ul id="todo-list">
-	    	<script type="text/template" id="item-template">
-				  <div class="view">
-				    <input class="toggle" type="checkbox" <%= done ? 'checked="checked"' : '' %> />
-				    <label><%= title %></label>
-				    <a class="destroy"></a>
-				  </div>
-				  <input class="edit" type="text" value="<%= title %>" />
-				</script>
-	    </ul>
+	    <ul id="todo-list"></ul>
 	  </section>
 
 	  <footer>
 	    <a id="clear-completed">Clear completed</a>
-	    <div id="todo-count">
-				<script type="text/template" id="stats-template">
-				  <% if (done) { %>
-				    <a id="clear-completed">Clear <%= done %> completed <%= done == 1 ? 'item' : 'items' %></a>
-				  <% } %>
-				  <div class="todo-count"><b><%= remaining %></b> <%= remaining == 1 ? 'item' : 'items' %> left</div>
-				</script>    	
-	
-	    </div>
+	    <div id="todo-count"></div>
 	  </footer>
 
 	</div>
@@ -66,7 +45,25 @@
 	</div>
 
   <!-- Application source -->
-  <script data-main="app/config" src="/assets/js/libs/require.js"></script>
+  <!--<script data-main="app/config" src="/assets/js/libs/require.js"></script>-->
+	<script data-main="app/config" src="/assets/js/libs/require.js"></script>
+
+	<!-- Templates -->
+	<script type="text/template" id="item-template">
+	  <div class="view">
+	    <input class="toggle" type="checkbox" <%= done ? 'checked="checked"' : '' %> />
+	    <label><%= title %></label>
+	    <a class="destroy"></a>
+	  </div>
+	  <input class="edit" type="text" value="<%= title %>" />
+	</script>
+
+	<script type="text/template" id="stats-template">
+	  <% if (done) { %>
+	    <a id="clear-completed">Clear <%= done %> completed <%= done == 1 ? 'item' : 'items' %></a>
+	  <% } %>
+	  <div class="todo-count"><b><%= remaining %></b> <%= remaining == 1 ? 'item' : 'items' %> left</div>
+	</script>
 
 </body>
 </html>
