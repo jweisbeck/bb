@@ -13,8 +13,8 @@ function(todo, $, Backbone, Todo) {
   // Defining the application router, you can attach sub routers here.
   var Router = Backbone.Router.extend({
     routes: {
-      "": "index"
-      //":hash": "index",
+      "": "index",
+      ":hash": "index",
     },
 
     index: function(hash) {

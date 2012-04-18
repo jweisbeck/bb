@@ -71,8 +71,8 @@ function(todo, Backbone, Storage ) {
   // This will fetch the tutorial template and render it.
   Todo.Views.TodoView = Backbone.View.extend({
 		tagName: "li",
-    template: _.template( $('#item-template').html() ),
-		//template: "app/templates/item-template.html",
+    	//template: _.template( $('#item-template').html() ),
+		template: "app/templates/item-template.html",
 
 		events: {
 		      "click .toggle"   : "toggleDone",
@@ -88,23 +88,19 @@ function(todo, Backbone, Storage ) {
 		},
 
     render: function(done) {
-			this.$el.html(this.template(this.model.toJSON()));
-			this.$el.toggleClass('done', this.model.get('done'));
-			this.input = this.$('.edit');
-			return this;
-
-			/*
-      // Fetch the template, render it to the View element and call done.     
- 			todo.fetchTemplate(this.template, function(tmpl) {
-        view.el.innerHTML = tmpl();
-
-        // If a done function is passed, call it with the element
-        if (_.isFunction(done)) {
-          done(view.el);
-        }
-      });*/
-
+			var model = this.model.toJSON(),
+					view  = this;		
+					
+			// Fetch the template, render it to the view element and call done.     
+	 		todo.fetchTemplate(this.template, function(tmpl) {
+				view.$el.html( tmpl(model) );		
+     	});
 			
+			//this.$el.html(this.template(this.model.toJSON()));
+			this.$el.toggleClass('done', this.model.get('done'));
+			this.input = this.$('.edit');		
+
+			return this;
     },
 
 		toggleDone: function() {
@@ -139,16 +135,13 @@ function(todo, Backbone, Storage ) {
 
 	Todo.Views.AppView = Backbone.View.extend({
 		el: $('#todoapp'),
-		//statsTemplate: "app/templates/stats-template.html",
-		statsTemplate: _.template( $('#stats-template').html() ),
+		statsTemplate: "app/templates/stats-template.html",
 		
 		events: {
 			"keypress #new-todo": "createOnEnter",
 			"click #clear-completed": "clearCompleted",
 			"click #toggle-all": "toggleAllComplete"
 		},
-		
-		
 		
 		initialize: function() {
 			this.input = this.$("#new-todo"),
@@ -171,7 +164,12 @@ function(todo, Backbone, Storage ) {
 			if (Todos.length) {
 			  this.main.show();
 			  this.footer.show();
-			  this.footer.html(this.statsTemplate({done: done, remaining: remaining}));
+				var footer = this.footer;
+			
+				todo.fetchTemplate(this.statsTemplate, function(tmpl) {
+					footer.html( tmpl( {done: done, remaining: remaining} ) );		
+	     	});
+			
 			} else {
 			  this.main.hide();
 			  this.footer.hide();
